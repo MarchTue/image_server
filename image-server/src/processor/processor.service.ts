@@ -14,6 +14,11 @@ export interface ProcessedImageResult {
 export class ProcessorService {
   private readonly logger = new Logger(ProcessorService.name);
 
+  /**
+   * ## 파일 버퍼를 받아 이미지를 워커에 전송, 반환함
+   * @param fileBuffer 파일 버퍼
+   * @returns ProcessedImageResult `{buffer, hash, width, height, mimeType}`
+   */
   async processFile(fileBuffer: Buffer): Promise<ProcessedImageResult> {
     return new Promise((resolve, reject) => {
       this.logger.log("Delegating image processing to Worker Thread . . . ");
