@@ -3,6 +3,10 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
+import { ImageModule } from './image/image.module';
+import { MinioModule } from './minio/minio.module';
+import { MetadataModule } from './metadata/metadata.module';
+import { ProcessorModule } from './processor/processor.module';
 
 
 @Module({
@@ -17,7 +21,11 @@ import { MongooseModule } from '@nestjs/mongoose';
       useFactory: async (configService: ConfigService) => ({
         uri: configService.get<string>("MONGO_URI"),
       })
-    })
+    }),
+    ImageModule,
+    MinioModule,
+    MetadataModule,
+    ProcessorModule
   ],
   controllers: [AppController],
   providers: [AppService],
