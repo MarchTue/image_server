@@ -1,27 +1,39 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as Minio from "minio";
 import { Readable } from 'stream';
 
 
 @Injectable()
-export class MinioService {
-  private readonly minioClient: Minio.Client;
-  private readonly bucketName: string;
+export class MinioService implements OnModuleInit {
+  private minioClient!: Minio.Client;
+  private bucketName!: string;
   private readonly logger = new Logger(MinioService.name);
 
-  constructor(private configService: ConfigService) {
-    // .env 파일 및 docker-compose.yml 파일(예시 파일입니다 참조) 
-    this.bucketName = this.configService.get<string>("MINIO_BUCKET_NAME")!;
+  // .env 파일 및 docker-compose.yml 파일(예시 파일입니다 참조) 
+  constructor(private readonly configService: ConfigService) { }
+
+  async onModuleInit() {
+    const endpoint = this.configService.get<string>('MINIO_ENDPOINT');
+    const port = parseInt(this.configService.get<string>('MINIO_PORT') || '0');
+    const accessKey = this.configService.get<string>('MINIO_ACCESS_KEY');
+    const secretKey = this.configService.get<string>('MINIO_SECRET_KEY');
+    this.bucketName = this.configService.get<string>('MINIO_BUCKET_NAME')!;
+
+    if (!endpoint || !port || isNaN(port)) {
+      this.logger.error(`[MINIO ERROR] Invalid endpoint or port`, { endpoint, port });
+      throw new Error(`[MINIO ERROR] Invalid endpoint or port`);
+    }
 
     this.minioClient = new Minio.Client({
-      endPoint: this.configService.get<string>("MINIO_ENDPOINT")!,
-      port: parseInt(this.configService.get<string>("MINIO_PORT")!),
-      accessKey: this.configService.get<string>("MINIO_ACCESS_KEY")!,
-      secretKey: this.configService.get<string>("MINIO_SECRET_KEY")!,
-      useSSL: false
+      endPoint: endpoint,
+      port,
+      accessKey,
+      secretKey,
+      useSSL: false,
     });
-    this.ensureBucketExists;
+
+    await this.ensureBucketExists();
   }
 
   private async ensureBucketExists() {
