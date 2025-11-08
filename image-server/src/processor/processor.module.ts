@@ -1,4 +1,8 @@
 import { Module } from '@nestjs/common';
+import { ProcessorService } from './processor.service';
 
-@Module({})
-export class ProcessorModule {}
+@Module({
+  providers: [ProcessorService],
+  exports: [ProcessorService]
+})
+export class ProcessorModule { }
