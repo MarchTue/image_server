@@ -53,7 +53,7 @@ export class MinioService {
   }
   /**
    * ## Get Image file from MinIO
-   * @param objectName 조회할 파일의 이름
+   * @param {string} objectName string : 조회할 파일의 이름
    * @returns 파일 스트림(Readable Stream)
    */
   getFileStream(objectName: string): Promise<Readable> {
