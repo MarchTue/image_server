@@ -1,0 +1,32 @@
+# Node.js
+node_modules/
+dist/
+.env
+.env.*
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# NestJS specific
+/coverage
+*.tsbuildinfo
+.eslintcache
+
+# IDE and OS files
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Logs
+logs/
+*.log
+
+# Test and temporary files
+*.tgz
+*.zip
+*.rar
+*.7z
+tmp/
