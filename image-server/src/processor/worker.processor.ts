@@ -1,7 +1,7 @@
 import { createHash } from "crypto";
 import sharp from "sharp";
 import { parentPort, workerData } from "worker_threads";
-
+type TransferableBuffer = ArrayBuffer & Transferable;
 interface WorkerData {
   buffer: Buffer;
   targetMimeType: string;
@@ -29,7 +29,8 @@ async function processImage(data: WorkerData) {
       width: metadata.width,
       height: metadata.height,
       mimeType: targetMimeType
-    }, [processedBuffer.buffer as ArrayBuffer]);
+      // }, [processedBuffer.buffer as ArrayBuffer]);
+    });
 
   } catch (error) {
     parentPort?.postMessage({ success: false, error: error.message });

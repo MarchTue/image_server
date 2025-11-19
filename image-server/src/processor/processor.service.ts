@@ -28,6 +28,7 @@ export class ProcessorService {
       const worker = new Worker(workerPath, {
         workerData: {
           buffer: fileBuffer,
+          targetMimeType: "image/webp"
         },
         transferList: [fileBuffer.buffer as ArrayBuffer],
       });
@@ -35,6 +36,9 @@ export class ProcessorService {
       // 결과 반환 시
       worker.on("message", (result) => {
         worker.terminate();
+        if (result.buffer && !(result.buffer instanceof Buffer)) {
+          result.buffer = Buffer.from(result.buffer);
+        }
         if (result.success) {
           resolve(result as ProcessedImageResult);
         } else {
